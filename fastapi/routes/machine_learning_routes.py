@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 import os
 from database import get_db  
-from models import PredictionResult
+from models import PredictionResult, User
 from sklearn.preprocessing import LabelEncoder
 
 # Check the model file path
@@ -25,7 +25,7 @@ label_encoder = LabelEncoder()
 # Router setup
 router = APIRouter(prefix="/api", tags=["prediction"])
 
-# Define the input model with 14 features (before one-hot encoding)
+# Define the input model with 14 features (before one-hot encoding)class ModelInput(BaseModel):
 class ModelInput(BaseModel):
     ssc_percentage: float
     hsc_percentage: float
@@ -39,6 +39,9 @@ class ModelInput(BaseModel):
     undergrad_degree: str  # 'Comm_Mgmt', 'Others', 'Sci_Tech'
     work_experience: str  # 'Yes' or 'No'
     specialisation: str  # 'Mkt_Fin' or 'Mkt_HR'
+    username: str  # Use username instead of user_id
+
+
 
 # Function to handle label encoding for categorical variables (used only for prediction)
 def label_encode_for_prediction(input_data):
@@ -53,29 +56,47 @@ def label_encode_for_prediction(input_data):
     
     return encoded_data
 
-# Function to store the prediction result in the database with the original string values
-def store_prediction_result(db: Session, input_data: dict, prediction_result: str):
-    # Ensure the correct types for SQLAlchemy model fields, storing original categorical values
+# Function to store the prediction result in the database with the original string values and user_id
+def store_prediction_result(db: Session, input_data: dict, prediction_result: str, username: str):
+    # Query the user by username to get the user_id
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Store the prediction result with the user_id obtained from the username
     prediction_entry = PredictionResult(
         ssc_percentage=float(input_data["ssc_percentage"]),
         hsc_percentage=float(input_data["hsc_percentage"]),
         degree_percentage=float(input_data["degree_percentage"]),
         emp_test_percentage=float(input_data["emp_test_percentage"]),
         mba_percent=float(input_data["mba_percent"]),
-        gender=str(input_data["gender"]),  # Ensure gender is stored as 'M' or 'F'
-        ssc_board=str(input_data["ssc_board"]),  # Ensure board is stored as string
-        hsc_board=str(input_data["hsc_board"]),  # Ensure board is stored as string
-        hsc_subject=str(input_data["hsc_subject"]),  # Ensure subject is stored as string
-        undergrad_degree=str(input_data["undergrad_degree"]),  # Ensure degree is stored as string
-        work_experience=str(input_data["work_experience"]),  # Ensure experience is stored as string
-        specialisation=str(input_data["specialisation"]),  # Ensure specialisation is stored as string
-        prediction_result=str(prediction_result)  # Store "Placed" or "Not Placed"
+        gender=str(input_data["gender"]),
+        ssc_board=str(input_data["ssc_board"]),
+        hsc_board=str(input_data["hsc_board"]),
+        hsc_subject=str(input_data["hsc_subject"]),
+        undergrad_degree=str(input_data["undergrad_degree"]),
+        work_experience=str(input_data["work_experience"]),
+        specialisation=str(input_data["specialisation"]),
+        prediction_result=str(prediction_result),
+        username=user.username  # Link prediction to the user through user_id
     )
     
     db.add(prediction_entry)
     db.commit()
     db.refresh(prediction_entry)
     return prediction_entry
+
+# Function to fetch prediction results using the username
+def fetch_prediction_results(db: Session, username: str):
+    # Query the database for all prediction results linked to the given username
+    results = db.query(PredictionResult).filter(PredictionResult.username == username).all()
+    
+    # If no results are found, raise an HTTPException
+    if not results:
+        raise HTTPException(status_code=404, detail="No prediction results found for this user.")
+    
+    return results
+
 
 # Route to make a prediction
 @router.post("/placement_prediction")
@@ -92,7 +113,16 @@ def placement_pred(input_parameters: ModelInput, db: Session = Depends(get_db)):
     prediction = placement_model.predict(df_input)
     result = "Placed" if prediction[0] == 1 else "Not Placed"
 
-    # Store the result in the database with the original string values
-    store_prediction_result(db, input_data, result)
+    # Store the result in the database with the original string values and user_id
+    store_prediction_result(db, input_data, result, input_data['username'])
 
     return {"prediction": result}
+
+# Route to get all prediction results for a user by username
+@router.get("/predictions/{username}")
+def get_predictions(username: str, db: Session = Depends(get_db)):
+    # Fetch the prediction results for the user with the provided username
+    prediction_results = fetch_prediction_results(db, username)
+    
+    # Return the prediction results as a response
+    return {"predictions": prediction_results}

@@ -1,51 +1,9 @@
 import React from 'react';
-import { Input, Button, Card } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../context/UserContext';
+import { Button, Card } from 'antd';
 
 const HomePage = () => {
-  const { user, setUserData, clearUserData } = useUserContext(); // Access the context
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    clearUserData();  // Clears user data from the context
-    navigate("/");    // Navigate back to the homepage
-  };
-
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="flex justify-between items-center p-6 bg-white shadow-md">
-        <div className="text-3xl font-extrabold text-blue-600">JobPredict</div>
-        <nav className="space-x-6 text-lg">
-          <a href="/" className="text-gray-700 hover:text-blue-600 transition duration-300">Home</a>
-          <a href="/about" className="text-gray-700 hover:text-blue-600 transition duration-300">About</a>
-          <a href="/predictions" className="text-gray-700 hover:text-blue-600 transition duration-300">Predictions</a>
-          <a href="/contact" className="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>
-
-          {/* Conditional Rendering based on user authentication */}
-          {!user ? (
-            <>
-              <a href="/signin" className="text-gray-700 hover:text-blue-600 transition duration-300">Sign In</a>
-              <a href="/register" className="text-gray-700 hover:text-blue-600 transition duration-300">Sign Up</a>
-            </>
-          ) : (
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700 font-semibold">Welcome, {user.username}</span>
-              <Button onClick={handleLogout} type="link" className="text-gray-700 hover:text-blue-600">
-                Logout
-              </Button>
-            </div>
-          )}
-        </nav>
-        <Input.Search
-          placeholder="Search jobs..."
-          style={{ width: 350 }}
-          enterButton={<Button type="primary" className="text-lg">Search</Button>}
-          className="rounded-full"
-        />
-      </header>
-
       {/* Hero Section */}
       <div className="flex flex-col items-center justify-center bg-gradient-to-r from-blue-600 to-blue-800 text-white h-80 p-10 rounded-b-3xl">
         <h1 className="text-5xl font-extrabold mb-4">Predict Your Future Job Trends Today</h1>
@@ -71,9 +29,9 @@ const HomePage = () => {
       <div className="max-w-6xl mx-auto py-16 text-center">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Current Job Trends</h2>
         <p className="text-lg text-gray-600 mb-6">Explore the latest jobs being created and their demand in the market.</p>
-        <div className="bg-gray-200 h-72 rounded-xl shadow-md flex items-center justify-center mb-6">
+        {/* <div className="bg-gray-200 h-72 rounded-xl shadow-md flex items-center justify-center mb-6">
           <p className="text-gray-500">Graph / Chart Placeholder</p>
-        </div>
+        </div> */}
       </div>
 
       {/* Testimonials */}

@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Select, Card, notification, Row, Col } from 'antd';
 import axiosInstance from '../api/axiosInstance';
+import { useUserContext } from '../context/UserContext'; // Import the user context
 
 const Prediction = () => {
+  const { user } = useUserContext();  // Access the user data from context
   const [loading, setLoading] = useState(false);
   const [predictionResult, setPredictionResult] = useState(null);
 
   const handlePrediction = async (values) => {
+    if (!user) {
+      notification.error({
+        message: "User not logged in",
+        description: "Please log in to make a prediction.",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await axiosInstance.post("/placement_prediction", values);
+      // Include the username and user_id in the prediction request
+      const response = await axiosInstance.post("/placement_prediction", {
+        ...values,  // Spread the form values
+        user_id: user.id,  // Add the user_id from the context
+        username: user.username,  // Add the username from the context
+      });
       setPredictionResult(response.data.prediction);
       notification.success({
         message: "Prediction Success",
@@ -35,12 +50,12 @@ const Prediction = () => {
         <Form layout="vertical" onFinish={handlePrediction}>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="SSC Percentage" name="ssc_percentage" rules={[{ required: true }]}>
+              <Form.Item label="SSC Percentage" name="ssc_percentage" rules={[{ required: true }]} >
                 <Input type="number" placeholder="Enter SSC percentage" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="HSC Percentage" name="hsc_percentage" rules={[{ required: true }]}>
+              <Form.Item label="HSC Percentage" name="hsc_percentage" rules={[{ required: true }]} >
                 <Input type="number" placeholder="Enter HSC percentage" />
               </Form.Item>
             </Col>
@@ -48,12 +63,12 @@ const Prediction = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Degree Percentage" name="degree_percentage" rules={[{ required: true }]}>
+              <Form.Item label="Degree Percentage" name="degree_percentage" rules={[{ required: true }]} >
                 <Input type="number" placeholder="Enter Degree percentage" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Employment Test Percentage" name="emp_test_percentage" rules={[{ required: true }]}>
+              <Form.Item label="Employment Test Percentage" name="emp_test_percentage" rules={[{ required: true }]} >
                 <Input type="number" placeholder="Enter Employment Test percentage" />
               </Form.Item>
             </Col>
@@ -61,12 +76,12 @@ const Prediction = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="MBA Percentage" name="mba_percent" rules={[{ required: true }]}>
+              <Form.Item label="MBA Percentage" name="mba_percent" rules={[{ required: true }]} >
                 <Input type="number" placeholder="Enter MBA percentage" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Gender" name="gender" rules={[{ required: true }]}>
+              <Form.Item label="Gender" name="gender" rules={[{ required: true }]} >
                 <Select placeholder="Select Gender">
                   <Select.Option value="M">Male</Select.Option>
                   <Select.Option value="F">Female</Select.Option>
@@ -77,7 +92,7 @@ const Prediction = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="SSC Board" name="ssc_board" rules={[{ required: true }]}>
+              <Form.Item label="SSC Board" name="ssc_board" rules={[{ required: true }]} >
                 <Select placeholder="Select SSC Board">
                   <Select.Option value="Central">Central</Select.Option>
                   <Select.Option value="Others">Others</Select.Option>
@@ -85,7 +100,7 @@ const Prediction = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="HSC Board" name="hsc_board" rules={[{ required: true }]}>
+              <Form.Item label="HSC Board" name="hsc_board" rules={[{ required: true }]} >
                 <Select placeholder="Select HSC Board">
                   <Select.Option value="Central">Central</Select.Option>
                   <Select.Option value="Others">Others</Select.Option>
@@ -96,7 +111,7 @@ const Prediction = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="HSC Subject" name="hsc_subject" rules={[{ required: true }]}>
+              <Form.Item label="HSC Subject" name="hsc_subject" rules={[{ required: true }]} >
                 <Select placeholder="Select HSC Subject">
                   <Select.Option value="Commerce">Commerce</Select.Option>
                   <Select.Option value="Science">Science</Select.Option>
@@ -104,7 +119,7 @@ const Prediction = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Undergrad Degree" name="undergrad_degree" rules={[{ required: true }]}>
+              <Form.Item label="Undergrad Degree" name="undergrad_degree" rules={[{ required: true }]} >
                 <Select placeholder="Select Undergrad Degree">
                   <Select.Option value="Comm_Mgmt">Commerce/Management</Select.Option>
                   <Select.Option value="Sci_Tech">Science/Technology</Select.Option>
@@ -116,7 +131,7 @@ const Prediction = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Work Experience" name="work_experience" rules={[{ required: true }]}>
+              <Form.Item label="Work Experience" name="work_experience" rules={[{ required: true }]} >
                 <Select placeholder="Select Work Experience">
                   <Select.Option value="Yes">Yes</Select.Option>
                   <Select.Option value="No">No</Select.Option>
@@ -124,7 +139,7 @@ const Prediction = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Specialisation" name="specialisation" rules={[{ required: true }]}>
+              <Form.Item label="Specialisation" name="specialisation" rules={[{ required: true }]} >
                 <Select placeholder="Select Specialisation">
                   <Select.Option value="Mkt_Fin">Marketing and Finance</Select.Option>
                   <Select.Option value="Mkt_HR">Marketing and HR</Select.Option>
