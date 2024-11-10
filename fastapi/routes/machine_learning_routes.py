@@ -4,24 +4,24 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import numpy as np
 import pickle
-from database import get_db  # Import get_db from your database.py
-from models import PredictionResult  # Make sure the PredictionResult model is imported from models.py
+from database import get_db  
+from models import PredictionResult  
 
-# Get the current working directory and build the relative path
-current_dir = os.path.dirname(__file__)  # Get the directory of the current script
-model_path = os.path.join(current_dir, "placement.sav")  # Adjust relative path to your model file
 
-# Ensure the file exists before loading it
+current_dir = os.path.dirname(__file__)  
+model_path = os.path.join(current_dir, "placement.sav")  
+
+
 if not os.path.exists(model_path):
     raise ValueError(f"Model file not found at {model_path}")
 
-# Load the model using the relative path
+
 placement_model = pickle.load(open(model_path, "rb"))
 
-# Create the router
+
 router = APIRouter(prefix="/api", tags=["prediction"])
 
-# Define the input model
+
 class ModelInput(BaseModel):
     ssc_percentage: float
     hsc_percentage: float
@@ -45,9 +45,9 @@ class ModelInput(BaseModel):
     specialisation_Mkt_Fin: bool
     specialisation_Mkt_HR: bool
 
-# Function to store prediction result in the database
+
 def store_prediction_result(db: Session, input_data: dict, prediction_result: str):
-    # Create an entry in the PredictionResult table
+    
     prediction_entry = PredictionResult(
         ssc_percentage=input_data["ssc_percentage"],
         hsc_percentage=input_data["hsc_percentage"],
@@ -77,20 +77,20 @@ def store_prediction_result(db: Session, input_data: dict, prediction_result: st
     db.refresh(prediction_entry)
     return prediction_entry
 
-# Define the prediction route within the router
+
 @router.post("/placement_prediction")
 def placement_pred(input_parameters: ModelInput, db: Session = Depends(get_db)):
     input_data = input_parameters.dict()
 
-    # Prepare the input data for the model
+
     processed_data = [
         input_data["ssc_percentage"],
         input_data["hsc_percentage"],
         input_data["degree_percentage"],
         input_data["emp_test_percentage"],
         input_data["mba_percent"],
-        int(input_data["gender_F"]),
-        int(input_data["gender_M"]),
+        int(input_data["gender_F"]),            
+        int(input_data["gender_M"]),  
         int(input_data["ssc_board_Central"]),
         int(input_data["ssc_board_Others"]),
         int(input_data["hsc_board_Central"]),
@@ -109,11 +109,11 @@ def placement_pred(input_parameters: ModelInput, db: Session = Depends(get_db)):
 
     input_array = np.array(processed_data).reshape(1, -1)
 
-    # Make prediction
+   
     prediction = placement_model.predict(input_array)
     result = "Placed" if prediction[0] == 1 else "Not Placed"
 
-    # Store the result in the database
+ 
     store_prediction_result(db, input_data, result)
 
     return {"prediction": result}
