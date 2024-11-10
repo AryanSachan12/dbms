@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -6,10 +7,16 @@ import pickle
 from database import get_db  # Import get_db from your database.py
 from models import PredictionResult  # Make sure the PredictionResult model is imported from models.py
 
-# Load the model (using raw string for Windows paths)
-placement_model = pickle.load(
-    open(r"C:\Aryan\Coding\React\dbms\fastapi\routes\placement.sav", "rb")
-)
+# Get the current working directory and build the relative path
+current_dir = os.path.dirname(__file__)  # Get the directory of the current script
+model_path = os.path.join(current_dir, "placement.sav")  # Adjust relative path to your model file
+
+# Ensure the file exists before loading it
+if not os.path.exists(model_path):
+    raise ValueError(f"Model file not found at {model_path}")
+
+# Load the model using the relative path
+placement_model = pickle.load(open(model_path, "rb"))
 
 # Create the router
 router = APIRouter(prefix="/api", tags=["prediction"])
