@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine
 from routes.user_routes import router as user_router
+from routes.machine_learning_routes import router as ml_router
 
 app = FastAPI(
     title="basic-fastapi",
@@ -23,3 +24,4 @@ models.Base.metadata.create_all(bind=engine)
 
 # Include the user router
 app.include_router(user_router)
+app.include_router(ml_router)
