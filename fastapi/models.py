@@ -13,16 +13,21 @@ class PredictionResult(Base):
     __tablename__ = "prediction_results"
 
     id = Column(Integer, primary_key=True, index=True)
-    ssc_percentage = Column(Float)
-    hsc_percentage = Column(Float)
-    degree_percentage = Column(Float)
-    emp_test_percentage = Column(Float)
-    mba_percent = Column(Float)
-    gender = Column(String(1))  # 'F' or 'M'
-    ssc_board = Column(String(10))  # 'Central' or 'Others'
-    hsc_board = Column(String(10))  # 'Central' or 'Others'
-    hsc_subject = Column(String(10))  # 'Arts', 'Commerce', or 'Science'
-    undergrad_degree = Column(String(10))  # 'Comm_Mgmt', 'Others', 'Sci_Tech'
-    work_experience = Column(String(3))  # 'Yes' or 'No'
-    specialisation = Column(String(10))  # 'Mkt_Fin' or 'Mkt_HR'
-    prediction_result = Column(String(20))  # Store "Placed" or "Not Placed"
+    ssc_percentage = Column(Float, nullable=False)  # Ensure the percentage fields are required
+    hsc_percentage = Column(Float, nullable=False)
+    degree_percentage = Column(Float, nullable=False)
+    emp_test_percentage = Column(Float, nullable=False)
+    mba_percent = Column(Float, nullable=False)
+    gender = Column(String(1), nullable=False)  # 'F' or 'M'
+    ssc_board = Column(String(20), nullable=False)  # Adjusted length for more flexibility
+    hsc_board = Column(String(20), nullable=False)
+    hsc_subject = Column(String(20), nullable=False)  # Increased length for more options
+    undergrad_degree = Column(String(20), nullable=False)  # Adjusted length
+    work_experience = Column(String(3), nullable=False)  # 'Yes' or 'No'
+    specialisation = Column(String(20), nullable=False)  # Increased length
+    prediction_result = Column(String(20), nullable=False)  # Store "Placed" or "Not Placed"
+
+    # Optionally, add a unique constraint if each record should be unique based on certain columns
+    __table_args__ = (
+        {'mysql_engine': 'InnoDB'},  # If using MySQL to ensure better transactional support
+    )

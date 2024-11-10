@@ -1,3 +1,4 @@
+import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -10,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 
 # Check the model file path
 current_dir = os.path.dirname(__file__)  
-model_path = os.path.join(current_dir, "placement.pkl")  
+model_path = os.path.join(current_dir, "model_pipeline.pkl")  
 
 if not os.path.exists(model_path):
     raise ValueError(f"Model file not found at {model_path}")
@@ -39,36 +40,38 @@ class ModelInput(BaseModel):
     work_experience: str  # 'Yes' or 'No'
     specialisation: str  # 'Mkt_Fin' or 'Mkt_HR'
 
-# Function to handle label encoding for categorical variables
-def label_encode(input_data):
-    # Encode categorical variables using LabelEncoder
-    input_data["gender"] = label_encoder.fit_transform([input_data["gender"]])[0]
-    input_data["ssc_board"] = label_encoder.fit_transform([input_data["ssc_board"]])[0]
-    input_data["hsc_board"] = label_encoder.fit_transform([input_data["hsc_board"]])[0]
-    input_data["hsc_subject"] = label_encoder.fit_transform([input_data["hsc_subject"]])[0]
-    input_data["undergrad_degree"] = label_encoder.fit_transform([input_data["undergrad_degree"]])[0]
-    input_data["work_experience"] = label_encoder.fit_transform([input_data["work_experience"]])[0]
-    input_data["specialisation"] = label_encoder.fit_transform([input_data["specialisation"]])[0]
+# Function to handle label encoding for categorical variables (used only for prediction)
+def label_encode_for_prediction(input_data):
+    encoded_data = input_data.copy()
+    encoded_data["gender"] = label_encoder.fit_transform([encoded_data["gender"]])[0]
+    encoded_data["ssc_board"] = label_encoder.fit_transform([encoded_data["ssc_board"]])[0]
+    encoded_data["hsc_board"] = label_encoder.fit_transform([encoded_data["hsc_board"]])[0]
+    encoded_data["hsc_subject"] = label_encoder.fit_transform([encoded_data["hsc_subject"]])[0]
+    encoded_data["undergrad_degree"] = label_encoder.fit_transform([encoded_data["undergrad_degree"]])[0]
+    encoded_data["work_experience"] = label_encoder.fit_transform([encoded_data["work_experience"]])[0]
+    encoded_data["specialisation"] = label_encoder.fit_transform([encoded_data["specialisation"]])[0]
     
-    return input_data
+    return encoded_data
 
-# Function to store the prediction result in the database
+# Function to store the prediction result in the database with the original string values
 def store_prediction_result(db: Session, input_data: dict, prediction_result: str):
+    # Ensure the correct types for SQLAlchemy model fields, storing original categorical values
     prediction_entry = PredictionResult(
-        ssc_percentage=input_data["ssc_percentage"],
-        hsc_percentage=input_data["hsc_percentage"],
-        degree_percentage=input_data["degree_percentage"],
-        emp_test_percentage=input_data["emp_test_percentage"],
-        mba_percent=input_data["mba_percent"],
-        gender=input_data["gender"],  # Storing gender as 'M' or 'F' in the database
-        ssc_board=input_data["ssc_board"],  # Storing the board info
-        hsc_board=input_data["hsc_board"],  # Storing the board info
-        hsc_subject=input_data["hsc_subject"],  # Storing subject info
-        undergrad_degree=input_data["undergrad_degree"],  # Storing undergrad degree
-        work_experience=input_data["work_experience"],  # Storing work experience info
-        specialisation=input_data["specialisation"],  # Storing specialisation
-        prediction_result=prediction_result
+        ssc_percentage=float(input_data["ssc_percentage"]),
+        hsc_percentage=float(input_data["hsc_percentage"]),
+        degree_percentage=float(input_data["degree_percentage"]),
+        emp_test_percentage=float(input_data["emp_test_percentage"]),
+        mba_percent=float(input_data["mba_percent"]),
+        gender=str(input_data["gender"]),  # Ensure gender is stored as 'M' or 'F'
+        ssc_board=str(input_data["ssc_board"]),  # Ensure board is stored as string
+        hsc_board=str(input_data["hsc_board"]),  # Ensure board is stored as string
+        hsc_subject=str(input_data["hsc_subject"]),  # Ensure subject is stored as string
+        undergrad_degree=str(input_data["undergrad_degree"]),  # Ensure degree is stored as string
+        work_experience=str(input_data["work_experience"]),  # Ensure experience is stored as string
+        specialisation=str(input_data["specialisation"]),  # Ensure specialisation is stored as string
+        prediction_result=str(prediction_result)  # Store "Placed" or "Not Placed"
     )
+    
     db.add(prediction_entry)
     db.commit()
     db.refresh(prediction_entry)
@@ -79,30 +82,17 @@ def store_prediction_result(db: Session, input_data: dict, prediction_result: st
 def placement_pred(input_parameters: ModelInput, db: Session = Depends(get_db)):
     input_data = input_parameters.dict()
 
-    # Label encode the categorical features
-    encoded_data = label_encode(input_data)
+    # Label encode the categorical features for prediction
+    encoded_data = label_encode_for_prediction(input_data)
 
-    # Prepare the input data for prediction (now all values are numeric)
-    input_array = np.array([
-        encoded_data["ssc_percentage"],
-        encoded_data["hsc_percentage"],
-        encoded_data["degree_percentage"],
-        encoded_data["emp_test_percentage"],
-        encoded_data["mba_percent"],
-        encoded_data["gender"],  # Now a numeric value (e.g., 0 or 1 for 'M'/'F')
-        encoded_data["ssc_board"],  # Numeric encoding for 'Central'/'Others'
-        encoded_data["hsc_board"],  # Numeric encoding for 'Central'/'Others'
-        encoded_data["hsc_subject"],  # Numeric encoding for 'Commerce'/'Science'
-        encoded_data["undergrad_degree"],  # Numeric encoding for degree categories
-        encoded_data["work_experience"],  # Numeric encoding for 'Yes'/'No'
-        encoded_data["specialisation"]  # Numeric encoding for 'Mkt_Fin'/'Mkt_HR'
-    ]).reshape(1, -1)
+    # Convert the encoded data into a pandas DataFrame
+    df_input = pd.DataFrame([encoded_data])
 
     # Make the prediction
-    prediction = placement_model.predict(input_array)
+    prediction = placement_model.predict(df_input)
     result = "Placed" if prediction[0] == 1 else "Not Placed"
 
-    # Store the result in the database
-    store_prediction_result(db, encoded_data, result)
+    # Store the result in the database with the original string values
+    store_prediction_result(db, input_data, result)
 
     return {"prediction": result}
