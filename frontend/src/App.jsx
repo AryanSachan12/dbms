@@ -5,6 +5,7 @@ import { UserProvider } from './context/UserContext';  // Import the UserProvide
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUp';
 import SignInPage from "./components/SignIn";
+import Prediction from './components/Prediction';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     path: "signup",
     element: <SignUpPage />,
   },
+  {
+    path: "predictions",
+    element: <Prediction />,
+  }
 ]);
 
 function App() {

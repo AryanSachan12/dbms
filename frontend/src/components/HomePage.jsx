@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 
 const HomePage = () => {
-  const { user, setUserData } = useUserContext();
+  const { user, setUserData, clearUserData } = useUserContext(); // Access the context
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setUserData(null); 
-    navigate("/");
+    clearUserData();  // Clears user data from the context
+    navigate("/");    // Navigate back to the homepage
   };
 
   return (
@@ -23,6 +23,7 @@ const HomePage = () => {
           <a href="/predictions" className="text-gray-700 hover:text-blue-600 transition duration-300">Predictions</a>
           <a href="/contact" className="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>
 
+          {/* Conditional Rendering based on user authentication */}
           {!user ? (
             <>
               <a href="/signin" className="text-gray-700 hover:text-blue-600 transition duration-300">Sign In</a>
@@ -79,7 +80,7 @@ const HomePage = () => {
       <div className="bg-gray-100 py-16 text-center">
         <h2 className="text-4xl font-bold text-gray-800 mb-8">What Our Users Say</h2>
         <div className="max-w-3xl mx-auto space-y-8">
-          {[
+          {[ 
             { quote: "This app helped me to find a job that I never knew existed!", author: "Alice, Software Engineer" },
             { quote: "The insights provided here are invaluable to my career planning.", author: "Bob, Data Analyst" },
           ].map((testimonial, index) => (
