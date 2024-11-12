@@ -85,7 +85,7 @@ const NavBar = () => {
               Sign In
             </a>
             <a
-              href="/register"
+              href="/signup"
               className="text-white hover:text-yellow-300 transition-colors duration-300"
             >
               Sign Up
