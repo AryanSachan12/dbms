@@ -82,11 +82,11 @@ const Dashboard = () => {
               >
                 <div className="space-y-3 text-gray-700">
                   <p>
-                    <strong>10th Percentage:</strong>{" "}
+                    <strong>SSC Percentage:</strong>{" "}
                     {prediction.ssc_percentage}
                   </p>
                   <p>
-                    <strong>12th Percentage:</strong>{" "}
+                    <strong>HSC Percentage:</strong>{" "}
                     {prediction.hsc_percentage}
                   </p>
                   <p>

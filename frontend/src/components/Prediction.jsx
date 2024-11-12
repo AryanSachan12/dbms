@@ -50,13 +50,13 @@ const Prediction = () => {
         <Form layout="vertical" onFinish={handlePrediction} className="space-y-6">
           <Row gutter={[24, 24]}>
             <Col span={12}>
-              <Form.Item label="10th Percentage" name="ssc_percentage" rules={[{ required: true }]}>
-                <Input type="number" placeholder="Enter 10th percentage" className="rounded-lg py-2" />
+              <Form.Item label="SSC Percentage" name="ssc_percentage" rules={[{ required: true }]}>
+                <Input type="number" placeholder="Enter SSC percentage" className="rounded-lg py-2" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="12th Percentage" name="hsc_percentage" rules={[{ required: true }]}>
-                <Input type="number" placeholder="Enter 12th percentage" className="rounded-lg py-2" />
+              <Form.Item label="HSC Percentage" name="hsc_percentage" rules={[{ required: true }]}>
+                <Input type="number" placeholder="Enter HSC percentage" className="rounded-lg py-2" />
               </Form.Item>
             </Col>
           </Row>
@@ -92,16 +92,16 @@ const Prediction = () => {
 
           <Row gutter={[24, 24]}>
             <Col span={12}>
-              <Form.Item label="10th Board" name="ssc_board" rules={[{ required: true }]}>
-                <Select placeholder="Select 10th Board" className="rounded-lg">
+              <Form.Item label="SSC Board" name="ssc_board" rules={[{ required: true }]}>
+                <Select placeholder="Select SSC Board" className="rounded-lg">
                   <Select.Option value="Central">Central</Select.Option>
                   <Select.Option value="Others">Others</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="12th Board" name="hsc_board" rules={[{ required: true }]}>
-                <Select placeholder="Select 12th Board" className="rounded-lg">
+              <Form.Item label="HSC Board" name="hsc_board" rules={[{ required: true }]}>
+                <Select placeholder="Select HSC Board" className="rounded-lg">
                   <Select.Option value="Central">Central</Select.Option>
                   <Select.Option value="Others">Others</Select.Option>
                 </Select>
@@ -111,8 +111,8 @@ const Prediction = () => {
 
           <Row gutter={[24, 24]}>
             <Col span={12}>
-              <Form.Item label="12th Subject" name="hsc_subject" rules={[{ required: true }]}>
-                <Select placeholder="Select 12th Subject" className="rounded-lg">
+              <Form.Item label="HSC Subject" name="hsc_subject" rules={[{ required: true }]}>
+                <Select placeholder="Select HSC Subject" className="rounded-lg">
                   <Select.Option value="Commerce">Commerce</Select.Option>
                   <Select.Option value="Science">Science</Select.Option>
                 </Select>
