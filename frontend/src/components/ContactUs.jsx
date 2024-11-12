@@ -94,7 +94,7 @@ const ContactUs = () => {
           <Card bordered={false} className="shadow-lg">
             <Title level={3}>Acknowledgements</Title>
             <Paragraph>
-              We would like to extend our heartfelt thanks to our teacher, Prof. Renu Dalal, for her continuous support and guidance throughout the project. 
+              We would like to extend our heartfelt thanks to our teacher, Dr. Renu Dalal, for her continuous support and guidance throughout the project. 
               Her expertise and advice were invaluable in bringing this project to fruition.
             </Paragraph>
           </Card>
