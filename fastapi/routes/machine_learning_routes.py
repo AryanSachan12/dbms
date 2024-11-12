@@ -91,12 +91,8 @@ def fetch_prediction_results(db: Session, username: str):
     # Query the database for all prediction results linked to the given username
     results = db.query(PredictionResult).filter(PredictionResult.username == username).all()
     
-    # If no results are found, raise an HTTPException
-    if not results:
-        raise HTTPException(status_code=404, detail="No prediction results found for this user.")
-    
+    # Return the results (empty list if no results are found)
     return results
-
 
 # Route to make a prediction
 @router.post("/placement_prediction")

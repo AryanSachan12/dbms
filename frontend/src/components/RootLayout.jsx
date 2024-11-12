@@ -6,9 +6,9 @@ const RootLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar should be present on every page */}
-      <NavBar />
+      <NavBar/>
       {/* The Outlet renders the page-specific content */}
-      <main className="flex-grow">
+      <main className="flex-grow mt-20">
         <Outlet />
       </main>
     </div>

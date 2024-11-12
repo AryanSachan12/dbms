@@ -7,6 +7,8 @@ import SignUpPage from './components/SignUp';
 import SignInPage from './components/SignIn';
 import Prediction from './components/Prediction';
 import Dashboard from './components/Dashboard';
+import About from './components/About';
+import ContactUs from './components/ContactUs';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "about",
+        element: <About />
+      },
+      {
+        path: "contact",
+        element: <ContactUs />
       }
     ],
   }

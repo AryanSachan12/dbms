@@ -5,22 +5,21 @@ const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Load user data from localStorage on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Parse the user data from localStorage
+      setUser(JSON.parse(storedUser)); 
     }
   }, []);
 
   const setUserData = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData)); // Store user data in localStorage
+    localStorage.setItem('user', JSON.stringify(userData)); 
   };
 
   const clearUserData = () => {
     setUser(null);
-    localStorage.removeItem('user'); // Remove user data from localStorage
+    localStorage.removeItem('user'); 
   };
 
   return (
