@@ -1,7 +1,5 @@
 ```markdown
-# ![JobPredict Logo](https://your-logo-url.com/logo.png) JobPredict
-
-![JobPredict Banner](https://your-banner-url.com/banner.png)
+JobPredict
 
 **JobPredict** is an intelligent job prediction system that utilizes machine learning techniques to provide users with insight into their job application success. Leveraging a **Logistic Regression Model**, our platform predicts the likelihood of securing a job based on user-inputted information.
 
