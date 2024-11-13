@@ -1,5 +1,3 @@
-Sure! Below is a beautiful README.md template for your JobPredict website, tailored to your requirements. You can copy this template into your README.md file and customize it as needed through GitHub or any Markdown-supported editor.
-
 ```markdown
 # ![JobPredict Logo](https://your-logo-url.com/logo.png) JobPredict
 
