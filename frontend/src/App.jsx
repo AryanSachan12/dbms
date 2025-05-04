@@ -6,7 +6,7 @@ import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUp';
 import SignInPage from './components/SignIn';
 import Prediction from './components/Prediction';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/DashBoard';
 import About from './components/About';
 import ContactUs from './components/ContactUs';
 
