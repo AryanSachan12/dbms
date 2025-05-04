@@ -1,4 +1,3 @@
-```markdown
 JobPredict
 
 **JobPredict** is an intelligent job prediction system that utilizes machine learning techniques to provide users with insight into their job application success. Leveraging a **Logistic Regression Model**, our platform predicts the likelihood of securing a job based on user-inputted information.
@@ -88,22 +87,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-For inquiries, reach out at [your.email@example.com](mailto:your.email@example.com).
+For inquiries, reach out at [test@gmail.com](mailto:test@gmail.com).
 
 ---
 
 ### ⭐️ Star the repository if you find it useful!
-
-![Star Badge](https://img.shields.io/github/stars/yourusername/JobPredict?style=social)
-
-```
-
-### Customization
-
-1. **Logos and Images**: Replace the URLs in the `[JobPredict Logo]` and `[JobPredict Banner]` with actual URLs to your project's logo and banner images.
-2. **Contact Information**: Update the email in the "Contact" section with your actual email.
-3. **GitHub Repository URL**: Be sure to change `https://github.com/yourusername/JobPredict.git` with the actual link of your GitHub repository.
-4. **License**: Make sure to add a LICENSE file if you want to specify the license info.
-5. **Custom Badges**: You may also want to add additional badges like CI/CD, coverage, etc. based on your project's needs.
-
-Feel free to modify any text/style to better fit your personal or team's branding!
