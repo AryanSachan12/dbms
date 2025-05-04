@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://jobpredict.onrender.com/', // Set base URL for all requests
+  baseURL: 'https://jobpredict.onrender.com/api/', // Set base URL for all requests
   headers: {
     'Content-Type': 'application/json',
   },
